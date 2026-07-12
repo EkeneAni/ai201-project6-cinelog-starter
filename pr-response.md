@@ -159,11 +159,36 @@ After `git fetch origin` and `git rebase origin/main`, I confirmed:
 
 ## Comment 1 — Rename
 **What I did:**
+
 **How I verified:**
+Basically used the search tool in the .py files to really make sure that the save_to_watchlist function was really renamed.
 
 ## Comment 2 — Deduplication
 **What I did:**
+I added the part of logic that checks for an existing film in the watchlist. I used this part add_to_collection in servises/collection_service.py:
+
+# existing = CollcetionEntry.query.filter_by(
+#       user_id=user_id, film_id=film_id
+#    ).first()
+#   if existing:
+#       raise AlreadyInCollectionError(
+#            f"Film '{film_id}' is already in this user's collection"
+#        )
+
+
+# existing = WatchlistEntry.query.filter_by(
+#       user_id=user_id, film_id=film_id
+#    ).first()
+#   if existing:
+#       raise AlreadyInCollectionError(
+#            f"Film '{film_id}' is already in this user's watchlist"
+#        )
+
+I changed the CollectionEntry part to WatchlistEntry and changed the f-string at the end to watchlist instead of collection.
+
 **How I verified:**
+Since there is not test_watchlist.py as there is for the test_collection.py, I asked AI to verify if the logic was sound. Claude said that it was good logic only that it was semantically off because I'm calling AlreadyInCollectionError instead of a more fitting AlreadyInWatchlistError, but the latter doesn't exist so that is the best I can do for now. Maybe later I can make a test specifically for testing the watchlist.
+
 
 ## Comment 3 — Missing test
 **What I did:**
