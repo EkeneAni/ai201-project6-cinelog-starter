@@ -192,7 +192,10 @@ Since there is not test_watchlist.py as there is for the test_collection.py, I a
 
 ## Comment 3 — Missing test
 **What I did:**
+I added a test_watchlist.py file to tests. This way, I can perform similar tests on the user's watchlist as I could on the user's collection.
+
 **How I verified:**
+I ran the tests using the command in the terminal and all 5 tests passed
 
 ## Comment 4 — Default visibility
 **My position:**
