@@ -45,7 +45,9 @@ def get_watchlist(user_id):
     """Return all films on a user's watchlist, sorted by date added (newest first)."""
 
     entries = (
-        WatchlistEntry.query.filter_by(user_id=user_id).order_by(WatchlistEntry.date_added.desc()).all()
+        WatchlistEntry.query.filter_by(user_id=user_id)
+        .order_by(WatchlistEntry.date_added.desc())
+        .all()
     )
 
     result = []

@@ -1,6 +1,7 @@
 # PR Response Doc — CineLog Watchlist Feature
 
 ## AI Usage
+
 I used Claude Code as a devil's advocate to stress-test my design responses (Comments 4
 and 5) before finalizing them. For each, I asked what counterargument a careful reviewer
 would raise and which tradeoff I wasn't acknowledging.
@@ -153,6 +154,36 @@ After `git fetch origin` and `git rebase origin/main`, I confirmed:
 - The branch history contains only re-applied feature commits on top of current `main` (no remaining conflict markers / no unresolved rebase state).
 - The updated watchlist UUID usage matches the post-refactor model on `main` (`Film.id` is UUID), so the previously-integer references were fully addressed.
 
+=======
+<!-- Fill in at the end — how you used AI tools during this project -->
+
+## Comment 1 — Rename
+**What I did:**
+**How I verified:**
+
+## Comment 2 — Deduplication
+**What I did:**
+**How I verified:**
+
+## Comment 3 — Missing test
+**What I did:**
+**How I verified:**
+
+## Comment 4 — Default visibility
+**My position:**
+**Reasoning:**
+**Tradeoff acknowledged:**
+
+## Comment 5 — Sort order
+**My position:**
+**Reasoning:**
+**Engagement with reviewer's point:**
+
+## Comment 6 — Rebase
+**What conflicted:**
+**How I resolved it:**
+**How I verified no conflict remains:**
+>>>>>>> a92a4e4 (Renamed all save_to_watchlist appearances to add_to_watchlist)
 
 ## PR Description
 <!-- Written at the end — feature overview, design decisions, manual testing steps -->
