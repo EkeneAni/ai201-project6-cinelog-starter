@@ -1,12 +1,13 @@
 """
-routes/watchlist.py — CineLog (feature/watchlist branch)
+routes/watchlist.py — CineLog
 
 Endpoints for the watchlist feature.
 """
 
 from flask import Blueprint, jsonify, request
-from services.watchlist_service import add_to_watchlist, get_watchlist
+
 from services.collection_service import FilmNotFoundError
+from services.watchlist_service import add_to_watchlist, get_watchlist
 
 watchlist_bp = Blueprint("watchlist", __name__)
 
@@ -20,10 +21,9 @@ def view_watchlist(user_id):
 
 @watchlist_bp.route("/<user_id>/add", methods=["POST"])
 def add_film(user_id):
-    """
-    POST /watchlist/<user_id>/add
+    """POST /watchlist/<user_id>/add
 
-    Body: { "film_id": <int> }
+    Body: { "film_id": <str> }
     """
     data = request.get_json()
     if not data or "film_id" not in data:
@@ -31,3 +31,4 @@ def add_film(user_id):
 
     entry = add_to_watchlist(user_id=user_id, film_id=data["film_id"])
     return jsonify(entry.to_dict()), 201
+
