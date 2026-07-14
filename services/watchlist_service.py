@@ -21,24 +21,14 @@ def add_to_watchlist(user_id, film_id):
 
     Raises:
         FilmNotFoundError: If film_id does not exist.
+        AlreadyInCollectionError: If the film is already in the user's watchlist.
     """
     film = db.session.get(Film, film_id)
     if film is None:
         raise FilmNotFoundError(f"No film found with id '{film_id}'")
-    
-    existing = WatchlistEntry.query.filter_by(
-        user_id=user_id, film_id=film_id
-    ).first()
-    if existing:
-        raise AlreadyInCollectionError(
-            f"Film '{film_id}' is already in this user's watchlist"
-        )
 
     existing = WatchlistEntry.query.filter_by(user_id=user_id, film_id=film_id).first()
     if existing:
-        # Keep existing project behavior/error type consistent with add_to_collection.
-        from services.collection_service import AlreadyInCollectionError
-
         raise AlreadyInCollectionError(
             f"Film '{film_id}' is already in this user's watchlist"
         )
@@ -50,8 +40,12 @@ def add_to_watchlist(user_id, film_id):
 
 
 def get_watchlist(user_id):
-    """Return all films on a user's watchlist, sorted by date added (newest first)."""
+    """Return all films on a user's watchlist, sorted by date added (newest first).
 
+    Sorting by date_added (not title) mirrors get_collection: a personal list is
+    most useful ordered by the user's own action, and newest-first surfaces the
+    film they just added at the top.
+    """
     entries = (
         WatchlistEntry.query.filter_by(user_id=user_id)
         .order_by(WatchlistEntry.date_added.desc())
