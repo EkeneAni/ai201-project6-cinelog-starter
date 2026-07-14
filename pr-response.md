@@ -1,24 +1,7 @@
 # PR Response Doc — CineLog Watchlist Feature
 
 ## AI Usage
-
-I used Claude Code as a devil's advocate to stress-test my design responses (Comments 4
-and 5) before finalizing them. For each, I asked what counterargument a careful reviewer
-would raise and which tradeoff I wasn't acknowledging.
-
-- **Comment 4:** It pushed the community cold-start / discovery cost of a private
-  default — that opt-in sharing converts poorly and the social surfaces start empty. I'd
-  named the tradeoff but hadn't answered it, so I added the explicit-opt-in mitigation
-  (onboarding share prompt + the per-entry `public` flag) and the framing that low
-  opt-in is a measurable signal we can revisit while a privacy incident is not.
-- **Comment 5:** It surfaced oldest-first (FIFO / anti-list-rot) as arguably a better
-  fit for a watchlist's queue semantics than newest-first. Rather than ignore it, I now
-  address it head-on and explain why the feedback and recency-of-intent benefits still
-  make newest-first the better default.
-
-Where the counterargument was something I'd already covered, I left the reasoning as-is.
-The positions and their justifications are my own; AI was used to find gaps, not to write
-the argument.
+<!-- Fill in at the end — how you used AI tools during this project -->
 
 ## Comment 1 — Rename
 **What I did:**
@@ -140,72 +123,6 @@ users, one shared pattern for us to maintain), not the load-bearing reason.
 The honest long-term answer is that sort direction is a per-user preference — the right
 fix is a user-selectable sort (added / title / rating) with newest-first as the default.
 That's out of scope for this PR; I'm setting the sensible default now.
-
-## Comment 6 — Rebase
-**What conflicted:**
-This rebase step primarily surfaced a UUID/integer drift: the watchlist feature code and PR-response text still carried integer-ID assumptions (e.g., “film_id: <int>” / “integer — pre-refactor” in docstrings) even though `main` had already migrated Film IDs to UUIDs.
-
-**How I resolved it:**
-I updated the watchlist code paths to consistently treat `film_id` as a UUID string (matching `models.py`’s `Film.id` type) and ensured the request/DB interactions align with that expectation. Concretely, the watchlist service now resolves films via `db.session.get(Film, film_id)` where `film_id` is the UUID, and watchlist entries store `film_id` as the UUID FK.
-
-**How I verified no conflict remains:**
-After `git fetch origin` and `git rebase origin/main`, I confirmed:
-- No merge commits were introduced into `feature/watchlist` (checked commit history with `--no-merges`).
-- The branch history contains only re-applied feature commits on top of current `main` (no remaining conflict markers / no unresolved rebase state).
-- The updated watchlist UUID usage matches the post-refactor model on `main` (`Film.id` is UUID), so the previously-integer references were fully addressed.
-
-=======
-<!-- Fill in at the end — how you used AI tools during this project -->
-
-## Comment 1 — Rename
-**What I did:**
-
-**How I verified:**
-Basically used the search tool in the .py files to really make sure that the save_to_watchlist function was really renamed.
-
-## Comment 2 — Deduplication
-**What I did:**
-I added the part of logic that checks for an existing film in the watchlist. I used this part add_to_collection in servises/collection_service.py:
-
-# existing = CollcetionEntry.query.filter_by(
-#       user_id=user_id, film_id=film_id
-#    ).first()
-#   if existing:
-#       raise AlreadyInCollectionError(
-#            f"Film '{film_id}' is already in this user's collection"
-#        )
-
-
-# existing = WatchlistEntry.query.filter_by(
-#       user_id=user_id, film_id=film_id
-#    ).first()
-#   if existing:
-#       raise AlreadyInCollectionError(
-#            f"Film '{film_id}' is already in this user's watchlist"
-#        )
-
-I changed the CollectionEntry part to WatchlistEntry and changed the f-string at the end to watchlist instead of collection.
-
-**How I verified:**
-Since there is not test_watchlist.py as there is for the test_collection.py, I asked AI to verify if the logic was sound. Claude said that it was good logic only that it was semantically off because I'm calling AlreadyInCollectionError instead of a more fitting AlreadyInWatchlistError, but the latter doesn't exist so that is the best I can do for now. Maybe later I can make a test specifically for testing the watchlist.
-
-
-## Comment 3 — Missing test
-**What I did:**
-I added a test_watchlist.py file to tests. This way, I can perform similar tests on the user's watchlist as I could on the user's collection.
-
-**How I verified:**
-I ran the tests using the command in the terminal and all 5 tests passed
-
-## Comment 4 — Default visibility
-**My position:**
-**Reasoning:**
-**Tradeoff acknowledged:**
-
-## Comment 5 — Sort order
-**My position:**
-**Reasoning:**
-**Engagement with reviewer's point:**
 
 ## Comment 6 — Rebase
 **What conflicted:**
